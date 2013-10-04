@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>dasoft.ch | Uptime dasoft</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<link href="css/dashboard.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class="container">
+		<div class="jumbotron">
+			<h1><span class="glyphicon glyphicon-dashboard"></span> dasoft.ch <small>dashboard</small></h1>
+			<p>
+				A quick overview of your server's uptime.
+			</p>
+		</div>
+		
+		<!-- progress bar of loaded servers -->
+		<div class="progress progress-striped">
+			<div class="progress-bar loading" style="width: 0;"></div>
+		</div>
+		<div class="panel-group" id="accordion">
+
+			<div id="server-container"></div>
+		</div>
+		<br />
+		<!-- count down timer + progress bar -->
+		<div class="col-md-1">
+			<i class="glyphicon glyphicon-refresh"></i> <span id="last-update"></span>
+		</div>
+		<div class="progress progress-striped progress-countdown">
+			<div class="progress-bar bar bar-info countdown" style="width: 0%;"></div>
+		</div>
+
+		<!-- modal windows-->
+		<div id="modal-about" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<div class="modal-title">Need help?</div>
+				</div>
+				<div class="modal-body">
+					<p>On this page you can see the status of different websites.</p>
+					<p>Each gauge shows the uptime of last day, week, month, year and all time. (These calculations are not very accurate...)</p>
+					<p>Click on the <i class="glyphicon glyphicon-time"></i>-icon to see the log of last month. Or open the monitored page by clicking on <i class="glyphicon glyphicon-link"></i></p>
+					<p>The page automatically refreshes every 5 Minutes</p>
+				</div>
+				<div class="modal-footer">
+        			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- navigation bar -->
+		<nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
+		  <div class="navbar-header">
+		    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+		      <span class="sr-only">nav</span>
+		      <span class="icon-bar"></span>
+		      <span class="icon-bar"></span>
+		      <span class="icon-bar"></span>
+		    </button>
+			<a class="navbar-brand" href="#"><i class="glyphicon glyphicon-dashboard"></i> dasoft.ch</a>
+		  </div>
+
+  		  <div class="collapse navbar-collapse navbar-ex1-collapse">
+  		  	<button type="button" data-toggle="modal" href="#modal-about" class="btn btn-default navbar-btn"><i class="glyphicon glyphicon-info-sign"></i> About</button>
+  		  	<a href="http://www.dasoft.ch" class="btn btn-default navbar-btn"><i class="glyphicon glyphicon-link"></i> dasoft.ch</a>
+		  </div>
+		</nav>
+	</div>
+
+	<script type="template/mustache" id="server-template">
+		<div class="panel panel-default">
+		    <div class="panel-heading">
+		      <h1 class="panel-title">
+		        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse{{id}}">
+		           {{friendlyname}}
+		        </a>
+		        <div class="pull-right">
+		    	<i class="label label-{{label}}">{{statustxt}}</i>
+				<a href="javascript:void(0)" class="btn btn-default btn-sm log tip" title="Log of last month"><i class="glyphicon glyphicon-time"></i></a>
+				<a href="{{url}}" target="_blank" class="btn btn-default btn-sm tip" title="Open monitored page"><i class="glyphicon glyphicon-link"></i></a>
+				<div class="log{{id}} hide">
+					<ul class="list-group">
+						{{#log}}
+	    				<li class="list-group-item">
+							<span class="label label-{{labeltype}}"><i class="glyphicon glyphicon-{{typeicon}}"></i></span>
+							&nbsp;{{datetime}}
+						</li>
+						{{/log}}
+					</ul>
+				</div>
+				</div>
+		      </h1>
+		    </div>
+		  <div id="collapse{{id}}" class="panel-collapse collapse">
+		  <div class="panel-body">
+		  	<div class="col-md-3">
+			<span id="control_{{id}}"></span>
+			</div>
+			<div class="col-md-9">
+				<span id="chart_{{id}}"></span>
+			</div>
+
+		</div>
+		</div>
+	</script>
+	<script src="js/libs/jquery.min.js" type="text/javascript"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="js/libs/mustache.js" type="text/javascript"></script>
+	<script src="js/libs/date.js" type="text/javascript"></script>
+	<script src="js/config.js" type="text/javascript"></script>
+	<!-- google chart biscuits -->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      // Load the Visualization API and the controls package.
+      google.load('visualization', '1.0', {'packages':['controls']});
+    </script>
+	<script src="js/app.js" type="text/javascript"></script>
+</body>
+</html>
