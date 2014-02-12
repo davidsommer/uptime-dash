@@ -31,3 +31,4 @@ Directions:
 1. Copy all files to your webserver
 2. Rename/Copy `js/config.example.js` to `js/config.js`
 3. Paste one ore more API keys as an array in `config.js`
+
