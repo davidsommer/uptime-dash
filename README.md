@@ -32,3 +32,4 @@ Directions:
 2. Rename/Copy `js/config.example.js` to `js/config.js`
 3. Paste one ore more API keys as an array in `config.js`
 
+[![Buy me a beer](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=david.sommer&url=https://github.com/davidsommer/uptime-dash&title=uptime-dash&language=&tags=github&category=software) 
