@@ -1,4 +1,6 @@
 window.myApp = window.myApp || {};
+
+
 myApp.dashboard = (function($) {
 
 	var _template = "",
@@ -11,6 +13,7 @@ myApp.dashboard = (function($) {
 		$_lastUpdate = {};
 
 	function init() {
+		google.charts.load('current', {packages: ['gauge', 'controls']});
 		_start = Date.now();
 		_template = $('#server-template').html();
 		$_container = $('#server-container').html('');
@@ -42,12 +45,41 @@ myApp.dashboard = (function($) {
 	* this calls jsonUptimeRobotApi() when loaded  
 	*/
 	function getUptime(apikey) {
-		var url = "http://api.uptimerobot.com/getMonitors?apiKey=" + apikey + "&customUptimeRatio=1-7-30-365&format=json&logs=1";
+		var url = "https://api.uptimerobot.com/getMonitors?apiKey=" + apikey + "&customUptimeRatio=1-7-30-365&format=json&logs=1";
 		$.ajax({
 			url: url,
 			context: document.body,
 			dataType: 'jsonp'
 		});
+	}
+
+	/* experimental, isn't working yet
+	*/
+	function getUptimeV2(apikey) {
+	
+		var myHeaders = new Headers();
+		myHeaders.append("Accept", "application/x-www-form-urlencoded");
+		myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+		
+		var formdata = new FormData();
+		formdata.append("api_key", apikey);
+		formdata.append("format", "json");
+		formdata.append("custom_uptime_ratios", "1-7-30-365");
+		formdata.append("logs", "1");
+		
+		var requestOptions = {
+		  method: 'POST',
+		  headers: myHeaders,
+		  body: formdata,
+		  redirect: 'follow'
+		};
+		
+		fetch("https://api.uptimerobot.com/v2/getMonitors", requestOptions)
+		  .then(response => response.text())
+		  .then(result => console.log(result))
+		  .catch(error => console.log('error', error));
+
+		// TODO call jsonUptimeRobotApi() when loaded  
 	}
 
 	/* places the html on the page */
@@ -124,15 +156,16 @@ myApp.dashboard = (function($) {
 	/* place the chart */
 	function placeCharts(values, id) {
 
-
-		var data = google.visualization.arrayToDataTable([
-			['Timerange', 'Value'],
-			['Last Day', parseFloat(values[0])],
-			['Last Week', parseFloat(values[1])],
-			['Last Month', parseFloat(values[2])],
-			['Last year', parseFloat(values[3])],
-			['All Time', parseFloat(values[4])]
-		]);  
+		var data = new google.visualization.DataTable();
+		data.addColumn('string','Timerange');
+		data.addColumn('number','Value');
+		data.addRows([
+				['Last Day', parseFloat(values[0])],
+				['Last Week', parseFloat(values[1])],
+				['Last Month', parseFloat(values[2])],
+				['Last year', parseFloat(values[3])],
+				['All Time', parseFloat(values[4])]
+			]);
 
 	  // Define a category picker for the 'Metric' column.
 	  var categoryPicker = new google.visualization.ControlWrapper({
