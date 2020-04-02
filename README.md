@@ -4,6 +4,8 @@ uptime-dash
 A Dashboard that gives you a nice responsive overview of your uptimerobot monitored sites.
 This Project is based on the work of https://github.com/digibart/upscuits.
 
+![Uptime Dash](/readme/uptime-dash.png)
+
 Frameworks used:
 -------------
 * [Bootstrap 3.3.7](https://getbootstrap.com)
