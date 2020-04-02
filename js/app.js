@@ -222,8 +222,9 @@ myApp.dashboard = (function($) {
 
 	function progress(timeleft, timetotal, $element) {
 		var progressBarWidth = timeleft * $element.width() / timetotal;
-
-		$element.find('div').animate({ width: progressBarWidth }, 100).html(Math.floor(timeleft/60) + ":"+ timeleft%60);
+		var minutes = Math.floor(timeleft / 60);
+		var seconds = timeleft % 60;
+		$element.find('div').animate({ width: progressBarWidth }, 100).html(minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0'));
 
 		if(timeleft > 0) {
 			setTimeout(function() {
