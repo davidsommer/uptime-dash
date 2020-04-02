@@ -8,7 +8,7 @@ This Project is based on the work of https://github.com/digibart/upscuits.
 
 Frameworks used:
 -------------
-* [Bootstrap 3.3.7](https://getbootstrap.com)
+* [Bootstrap 4.3.1](https://getbootstrap.com)
 * [UptimeRobot API](https://www.uptimerobot.com/api)
 * [Google Charts](https://developers.google.com/chart)
 * [Mustaches](https://github.com/janl/mustache.js/)
