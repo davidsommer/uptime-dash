@@ -6,35 +6,44 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 	<link href="css/dashboard.css" rel="stylesheet">
 </head>
 
 <body>
 	<div class="container">
 		<div class="jumbotron">
-			<h1><span class="glyphicon glyphicon-dashboard"></span> dasoft.ch <small>dashboard</small></h1>
+			<h1><span class="fa fa-dashboard"></span> dasoft.ch <small>dashboard</small></h1>
 			<p>
 				A quick overview of your server's uptime.
 			</p>
 		</div>
 		
 		<!-- progress bar of loaded servers -->
-		<div class="progress progress-striped">
-			<div class="progress-bar loading" style="width: 0;"></div>
+		<div class="progress">
+			<div class="progress-bar progress-striped bg loading" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0;"></div>
 		</div>
-		<div class="panel-group" id="accordion">
-
+		<div class="accordion" id="accordion">
 			<div id="server-container"></div>
 		</div>
 		<br />
+		<div class="row">
+			<div class="col-md-auto">
 		<!-- count down timer + progress bar -->
-		<div class="col-md-1">
-			<i class="glyphicon glyphicon-refresh"></i> <span id="last-update"></span>
+		
+			<i class="fa fa-refresh"></i> <span id="last-update"></span>
+			</div>
+			<div class="col">
+				<div id="progressBar" class="progress">
+					<div class="progress-bar progress-bar-striped" role="progressbar"></div>
+				</div>
+			</div>
+
 		</div>
-		<div class="progress progress-striped progress-countdown">
-			<div class="progress-bar bar bar-info countdown" style="width: 0%;"></div>
-		</div>
+
+
+
 
 		<!-- modal windows-->
 		<div id="modal-about" class="modal fade">
@@ -47,76 +56,82 @@
 				<div class="modal-body">
 					<p>On this page you can see the status of different websites.</p>
 					<p>Each gauge shows the uptime of last day, week, month, year and all time. (These calculations are not very accurate...)</p>
-					<p>Click on the <i class="glyphicon glyphicon-time"></i>-icon to see the log of last month. Or open the monitored page by clicking on <i class="glyphicon glyphicon-link"></i></p>
+					<p>Click on the <i class="fa fa-time"></i>-icon to see the log of last month. Or open the monitored page by clicking on <i class="fa fa-link"></i></p>
 					<p>The page automatically refreshes every 5 Minutes</p>
 				</div>
 				<div class="modal-footer">
-        			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 				</div>
 				</div>
 			</div>
 		</div>
 
 		<!-- navigation bar -->
-		<nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
-		  <div class="navbar-header">
-		    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-		      <span class="sr-only">nav</span>
-		      <span class="icon-bar"></span>
-		      <span class="icon-bar"></span>
-		      <span class="icon-bar"></span>
-		    </button>
-			<a class="navbar-brand" href="#"><i class="glyphicon glyphicon-dashboard"></i> dasoft.ch</a>
-		  </div>
-
-  		  <div class="collapse navbar-collapse navbar-ex1-collapse">
-  		  	<button type="button" data-toggle="modal" href="#modal-about" class="btn btn-default navbar-btn"><i class="glyphicon glyphicon-info-sign"></i> About</button>
-  		  	<a href="https://www.dasoft.ch" class="btn btn-default navbar-btn"><i class="glyphicon glyphicon-link"></i> dasoft.ch</a>
-		  </div>
+		<nav class="navbar bg-dark navbar-dark fixed-bottom">
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<button type="button" data-toggle="modal" data-target="#modal-about" class="btn btn-secondary">
+						<i class="fa fa-info-circle"></i>
+						About
+					</button>
+					<button type="button" href="https://www.dasoft.ch" class="btn btn-secondary">
+						<i class="fa fa-link"></i>
+						  dasoft.ch
+					</button>
+				</li>
+			</ul>
 		</nav>
 	</div>
 
 	<script type="template/mustache" id="server-template">
-		<div class="panel panel-default">
-		    <div class="panel-heading">
-		      <h1 class="panel-title">
-		        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse{{id}}">
-		           {{friendlyname}}
-		        </a>
-		        <div class="pull-right">
-		    	<i class="label label-{{label}}">{{statustxt}}</i>
-				<a href="javascript:void(0)" class="btn btn-default btn-sm log tip" title="Log of last month"><i class="glyphicon glyphicon-time"></i></a>
-				<a href="{{url}}" target="_blank" class="btn btn-default btn-sm tip" title="Open monitored page"><i class="glyphicon glyphicon-link"></i></a>
-				<div class="log{{id}} hide">
-					<ul class="list-group">
-						{{#log}}
-	    				<li class="list-group-item">
-							<span class="label label-{{labeltype}}"><i class="glyphicon glyphicon-{{typeicon}}"></i></span>
-							&nbsp;{{datetime}}
-						</li>
-						{{/log}}
-					</ul>
-				</div>
-				</div>
-		      </h1>
-		    </div>
-		  <div id="collapse{{id}}" class="panel-collapse collapse">
-		  <div class="panel-body">
-		  	<div class="col-md-3">
-			<span id="control_{{id}}"></span>
-			</div>
-			<div class="col-md-9">
-				<span id="chart_{{id}}"></span>
-			</div>
+		<div class="card">
+		    <div class="card-header" aria-expanded="false" data-toggle="collapse" data-target="#collapse{{id}}">
+				<h3 class="float-left" style="background-image: url(https://www.google.com/s2/favicons?domain={{url}})">{{friendlyname}}</h3>
+				<div class="float-right">
+					<i class="badge badge-pill badge-{{label}}">{{statustxt}}</i>
+					<button href="{{url}}" target="_blank" data-toggle="tooltip" title="Open monitored page" type="button" class="btn btn-sm btn-light tip">
+						<i class="fa fa-link"></i>
+					</button>
+					<span class="accicon" data-toggle="collapse" data-target="#collapse{{id}}">
+						<i class="fa fa-chevron-down"></i>				
+					</span>
 
-		</div>
+					<div class="tooltip bs-tooltip-top log" role="tooltip">
+
+					</div>
+				</div>
+			</div>
+			<div id="collapse{{id}}" class="collapse" data-parent="#accordion">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-md-auto">
+							<span id="control_{{id}}"></span>
+						</div>
+						<div class="col">
+							<span id="chart_{{id}}"></span>
+						</div>
+						<div class="col">
+						<ul class="list-group list-group-flush">
+							{{#log}}
+							<li class="list-group-item">
+								<span class="badge badge-{{labeltype}}"><i class="fa fa-{{typeicon}}"></i></span>
+								&nbsp;{{datetime}}
+							</li>
+							{{/log}}
+						</ul>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</script>
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.min.js" integrity="sha256-MPgtcamIpCPKRRm1ppJHkvtNBAuE71xcOM+MmQytXi8=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>	<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.min.js" integrity="sha256-MPgtcamIpCPKRRm1ppJHkvtNBAuE71xcOM+MmQytXi8=" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js" integrity="sha256-xljKCznmrf+eJGt+Yxyo+Z3KHpxlppBZSjyDlutbOh0=" crossorigin="anonymous"></script>
 	<script src="js/config.js" type="text/javascript"></script>
+	<!-- google chart biscuits -->
+    <!--Load the AJAX API-->
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script src="js/app.js" type="text/javascript"></script>
 </body>

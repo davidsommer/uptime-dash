@@ -1,18 +1,42 @@
 body { padding-bottom: 70px; }
 
-.panel-heading {
-	height: 50px;
+.card-header .accicon {
+    font-size: 20px;  
+    width: 1.2em;
 }
-.panel-heading .accordion-toggle:after {
-    /* symbol for "opening" panels */
-    font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
-    content: "\e114";    /* adjust as needed, taken from bootstrap.css */
-    float: right;        /* adjust as needed */
-    color: grey;         /* adjust as needed */
-    padding-left: 10px;
+
+.card-header{
+    cursor: pointer;
+    border-bottom: none;
 }
-.panel-heading .accordion-toggle.collapsed:after {
-    /* symbol for "collapsed" panels */
-    content: "\e080";    /* adjust as needed, taken from bootstrap.css */
-    padding-left: 10px;
+.card{
+    border: 1px solid #ddd;
+    margin-top: 10px;
+}
+.card-body{
+    border-top: 1px solid #ddd;
+}
+
+h3  {
+    padding-left: 48px;
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: left center;
+    display: block;
+    margin: 10px;
+    text-decoration: none;
+}
+
+#progressBar {
+    width: 100%;
+    height: 22px;
+  }
+  
+#progressBar div {
+    height: 100%;
+    text-align: right;
+    padding: 0 10px;
+    line-height: 22px; /* same as #progressBar height if we want text middle aligned */
+    width: 0;
+    box-sizing: border-box;
 }

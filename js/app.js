@@ -5,38 +5,34 @@ myApp.dashboard = (function($) {
 
 	var _template = "",
 		_loaded = 0,
-		_intervalId = 0,
-		_start = Date.now(),
 		$_container = {},
 		$_prograss = {},
-		$_countdown = {},
-		$_lastUpdate = {};
+		$_countdown = {}
 
 	function init() {
 		google.charts.load('current', {packages: ['gauge', 'controls']});
-		_start = Date.now();
 		_template = $('#server-template').html();
 		$_container = $('#server-container').html('');
 		$_prograss = $('.loading');
-		$_countdown = $('.countdown');
-		$_lastUpdate = $('#last-update');
+		$_countdown = $('#progressBar');
 
 		for (var i in __apiKeys) {
 			getUptime(__apiKeys[i]);
 		}
 
 		attachListners($('html'));
-
-		_intervalId = setInterval(countdown, 1000);
+		countdown();
 	}
 
 	function attachListners($target) {
+
 		$target.find('.tip').tooltip({
 			placement: 'bottom'
 		});
+
 		$target.find('body').mouseup(function(event) {
 			if ($('.popover-inner').length) {
-				$('a.log').popover('hide');
+				$('button.log').popover('hide');
 			}
 		});
 	}
@@ -221,21 +217,22 @@ myApp.dashboard = (function($) {
 
 	/* count down till next refresh */
 	function countdown() {
-		var now = Date.now(),
-			elapsed = parseInt((now - _start) / 1000),
-			mins = Math.floor((__refresh - elapsed) / 60),
-			secs = __refresh - (mins * 60) - elapsed;
+		progress(150, 150, $_countdown);
+	}
 
-		secs = (secs < 10) ? "0" + secs : secs;
+	function progress(timeleft, timetotal, $element) {
+		var progressBarWidth = timeleft * $element.width() / timetotal;
 
-		$_countdown.width(100 - (elapsed * (100 / __refresh)) + '%');
-		$_lastUpdate.html(mins + ':' + secs);
+		$element.find('div').animate({ width: progressBarWidth }, 100).html(Math.floor(timeleft/60) + ":"+ timeleft%60);
 
-		if (elapsed > __refresh) {
-			clearInterval(_intervalId);
+		if(timeleft > 0) {
+			setTimeout(function() {
+				progress(timeleft - 1, timetotal, $element);
+			}, 600);
+		} else {
 			init();
 		}
-	}
+	};
 
 	/* set the icon in front of every log-line */
 	function getLogIcon() {
@@ -287,7 +284,8 @@ jQuery(document).ready(myApp.dashboard.init);
 
 /* function called from the uptimerequest */
 function jsonUptimeRobotApi(data) {
-	for (var i in data.monitors.monitor) {
+	
+	for (var i in data.monitors.monitor.sort()) {
 		myApp.dashboard.placeServer(data.monitors.monitor[i]);
 	}
 }
