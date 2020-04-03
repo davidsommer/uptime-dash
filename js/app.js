@@ -1,6 +1,5 @@
 window.myApp = window.myApp || {};
 
-
 myApp.dashboard = (function($) {
 
 	var _template = "",
@@ -24,65 +23,36 @@ myApp.dashboard = (function($) {
 	}
 
 	function attachListners($target) {
+		$target.find('.accordion').on('hidden.bs.collapse', toggleIcon);
+		$target.find('.accordion').on('shown.bs.collapse', toggleIcon);
+	}		
 
-		$target.find('.tip').tooltip({
-			placement: 'bottom'
-		});
-
-		$target.find('body').mouseup(function(event) {
-			if ($('.popover-inner').length) {
-				$('button.log').popover('hide');
-			}
-		});
+	function toggleIcon(e) {
+		console.log("TEST")
+		$(e.target)
+			.prev('.card-header')
+			.find(".more-less")
+			.toggleClass('fa-plus fa-minus');
 	}
-
+	
 	/* load uptime variables from uptimerobot
-	* this calls jsonUptimeRobotApi() when loaded  
 	*/
 	function getUptime(apikey) {
-		$("#error").hide();
-		var url = "https://api.uptimerobot.com/getMonitors?apiKey=" + apikey + "&customUptimeRatio=1-7-30-365&format=json&logs=1";
-		$.ajax({
-			url: url,
-			context: document.body,
-			dataType: 'jsonp',
-			error: function(xhr, status, error){
-				if (xhr.status != 200) {
-					var errorMessage = xhr.status + ': ' + xhr.statusText
-					console.log("ERROR - connecting to uptimerobot API failed (" + url + ") - " + errorMessage);
-					$("#error").html("ERROR - connecting to uptimerobot API failed, check your key (" + url + ")").show();
-				}
-			}
-		});
-	}
-
-	/* experimental, isn't working yet
-	*/
-	function getUptimeV2(apikey) {
+		var url = "https://api.uptimerobot.com/v2/getMonitors";
 	
-		var myHeaders = new Headers();
-		myHeaders.append("Accept", "application/x-www-form-urlencoded");
-		myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-		
-		var formdata = new FormData();
-		formdata.append("api_key", apikey);
-		formdata.append("format", "json");
-		formdata.append("custom_uptime_ratios", "1-7-30-365");
-		formdata.append("logs", "1");
-		
-		var requestOptions = {
-		  method: 'POST',
-		  headers: myHeaders,
-		  body: formdata,
-		  redirect: 'follow'
-		};
-		
-		fetch("https://api.uptimerobot.com/v2/getMonitors", requestOptions)
-		  .then(response => response.text())
-		  .then(result => console.log(result))
-		  .catch(error => console.log('error', error));
-
-		// TODO call jsonUptimeRobotApi() when loaded  
+		$.post(url, {
+			"api_key": apikey,
+			"format": "json",
+			"custom_uptime_ratios": "1-7-30-365",
+			"all_time_uptime_ratio": "1",
+			"logs": "1"
+		}, function(response) {
+			jsonUptimeRobotApi(response);
+		}, 'json')
+		.fail(function(response) {
+			console.log("ERROR - connecting to uptimerobot API failed (" + url + ") - " + response);
+			$("#error").html("ERROR - connecting to uptimerobot API failed, check your key (" + url + "). More infos in the console").show();
+		});;
 	}
 
 	/* places the html on the page */
@@ -113,19 +83,11 @@ myApp.dashboard = (function($) {
 				break;
 		}
 
-		//ony show last month of logs
-		var lastMonth = Date.parse('-1month');
-		for (var i in data.log) {
-			var log = data.log[i],
-				dateTime = Date.parse(log.datetime + " GMT+0300");
-
-			if (dateTime < lastMonth) {
-				data.log.splice(i, i + 1);
-			} else {
-				data.log[i].datetime = dateTime.toString("dd-MM-yyyy H:mm:ss");
-			}
+		for (var i in data.logs) {
+			var log = data.logs[i], dateTime = Date.parse(new Date(data.logs[i].datetime * 1000));
+			data.logs[i].datetime = dateTime.toString("dd-MM-yyyy HH:mm:ss");
 		}
-		data.log = $.merge([], data.log); //make sure log is set
+		data.logs = $.merge([], data.logs); //make sure log is set
 
 		// interface of log-stuf like icons
 		data.typeicon = getLogIcon;
@@ -134,24 +96,13 @@ myApp.dashboard = (function($) {
 		//render the sh!t
 		var $output = $(Mustache.render(_template, data));
 
-		//attach popover listners
-		$output.find('a.log').click(function() {
-			$(this).tooltip('hide');
-		}).popover({
-			placement: 'bottom',
-			html: true,
-			content: $output.find('div.log' + data.id).html()
-		});
-		attachListners($output);
-
 		//append it in the container
 		$_container.append($output);
 
 		//load/place the graphs
-		var values = data.customuptimeratio.split("-");
-		values.push(data.alltimeuptimeratio);
+		var values = data.custom_uptime_ratio.split("-");
+		values.push(data.all_time_uptime_ratio);
 		placeCharts(values, data.id);
-
 
 		updateProgressBar();
 	}
@@ -293,12 +244,14 @@ jQuery(document).ready(myApp.dashboard.init);
 /* function called from the uptimerequest */
 function jsonUptimeRobotApi(data) {
 	if (data.stat === "fail") {
-		$('#error').html("ERROR connecting to the API - " + data.message).show();
-		console.error("<b>ERROR</b> connecting to the API - " + data.message);
+		$('#error').html("ERROR connecting to the API - " + data.error.message).show();
+		console.error("<b>ERROR</b> connecting to the API - " + data.error.message);
 	} else {
 		$('#error').hide();
-		for (var i in data.monitors.monitor) {
-			myApp.dashboard.placeServer(data.monitors.monitor[i]);
-		}
+		for (var i=0; i<data.monitors.length; i++) {
+			var listItem = data.monitors[i]; 
+			myApp.dashboard.placeServer(listItem);
+	   }
+
 	}
 }

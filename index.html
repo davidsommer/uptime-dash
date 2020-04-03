@@ -74,7 +74,7 @@
 						<i class="fa fa-info-circle"></i>
 						About
 					</button>
-					<button type="button" href="https://www.dasoft.ch" class="btn btn-secondary">
+					<button type="button" href="https://www.dasoft.ch" target="_blank" class="btn btn-secondary">
 						<i class="fa fa-link"></i>
 						  dasoft.ch
 					</button>
@@ -85,21 +85,16 @@
 
 	<script type="template/mustache" id="server-template">
 		<div class="card">
-		    <div class="card-header" aria-expanded="false" data-toggle="collapse" data-target="#collapse{{id}}">
-				<h3 class="float-left" style="background-image: url(https://www.google.com/s2/favicons?domain={{url}})">{{friendlyname}}</h3>
-				<div class="float-right">
-					<i class="badge badge-pill badge-{{label}}">{{statustxt}}</i>
-					<button href="{{url}}" target="_blank" data-toggle="tooltip" title="Open monitored page" type="button" class="btn btn-sm btn-light tip">
-						<i class="fa fa-link"></i>
-					</button>
-					<span class="accicon" data-toggle="collapse" data-target="#collapse{{id}}">
-						<i class="fa fa-chevron-down"></i>				
-					</span>
+		    <div class="card-header collapsed" aria-expanded="false" data-toggle="collapse" data-target="#collapse{{id}}">
+					<h3 class="float-left" style="background-image: url(https://www.google.com/s2/favicons?domain={{url}})">{{friendly_name}}</h3>
+					<div class="float-right">
+						<i class="badge badge-pill badge-{{label}}">{{statustxt}}</i>
+						<a href="{{url}}" target="_blank" title="Open monitored page" type="button" class="btn btn-sm btn-light">
+							<i class="fa fa-link"></i>
+						</a>
+						<span class="fa fa-plus more-less"></span>
 
-					<div class="tooltip bs-tooltip-top log" role="tooltip">
-
-					</div>
-				</div>
+				  </div>
 			</div>
 			<div id="collapse{{id}}" class="collapse" data-parent="#accordion">
 				<div class="card-body">
@@ -112,12 +107,12 @@
 						</div>
 						<div class="col">
 						<ul class="list-group list-group-flush">
-							{{#log}}
+							{{#logs}}
 							<li class="list-group-item">
 								<span class="badge badge-{{labeltype}}"><i class="fa fa-{{typeicon}}"></i></span>
 								&nbsp;{{datetime}}
 							</li>
-							{{/log}}
+							{{/logs}}
 						</ul>
 						</div>
 					</div>

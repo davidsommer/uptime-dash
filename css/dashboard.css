@@ -40,3 +40,7 @@ h3  {
     width: 0;
     box-sizing: border-box;
 }
+
+.accordion-toggle:hover {
+    text-decoration: none;
+}
