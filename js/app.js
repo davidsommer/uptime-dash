@@ -7,7 +7,8 @@ myApp.dashboard = (function($) {
 		_loaded = 0,
 		$_container = {},
 		$_prograss = {},
-		$_countdown = {}
+		$_countdown = {},
+		$_error = {} 
 
 	function init() {
 		google.charts.load('current', {packages: ['gauge', 'controls']});
@@ -15,6 +16,7 @@ myApp.dashboard = (function($) {
 		$_container = $('#server-container').html('');
 		$_prograss = $('.loading');
 		$_countdown = $('#progressBar');
+		$_error = $('#error');
 
 		for (var i in __apiKeys) {
 			getUptime(__apiKeys[i]);
@@ -285,8 +287,12 @@ jQuery(document).ready(myApp.dashboard.init);
 
 /* function called from the uptimerequest */
 function jsonUptimeRobotApi(data) {
-	
-	for (var i in data.monitors.monitor.sort()) {
-		myApp.dashboard.placeServer(data.monitors.monitor[i]);
+	if (data.stat === "fail") {
+		$('#error').html("ERROR connecting to the API - " + data.message).show();
+		console.error("<b>ERROR</b> connecting to the API - " + data.message);
+	} else {
+		for (var i in data.monitors.monitor) {
+			myApp.dashboard.placeServer(data.monitors.monitor[i]);
+		}
 	}
 }
