@@ -47,9 +47,11 @@ myApp.dashboard = (function($) {
 			context: document.body,
 			dataType: 'jsonp',
 			error: function(xhr, status, error){
-				var errorMessage = xhr.status + ': ' + xhr.statusText
-				console.log("ERROR - connecting to uptimerobot API failed (" + url + ") - " + errorMessage);
-				$("#error").html("ERROR - connecting to uptimerobot API failed (" + url + ")").show();
+				if (xhr.status != 200) {
+					var errorMessage = xhr.status + ': ' + xhr.statusText
+					console.log("ERROR - connecting to uptimerobot API failed (" + url + ") - " + errorMessage);
+					$("#error").html("ERROR - connecting to uptimerobot API failed, check your key (" + url + ")").show();
+				}
 			}
 		});
 	}
