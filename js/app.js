@@ -7,7 +7,7 @@ myApp.dashboard = (function($) {
 		_loaded = 0,
 		$_container = {},
 		$_prograss = {},
-		$_countdown = {},
+		$_countdown = {}
 
 	function init() {
 		google.charts.load('current', {packages: ['gauge', 'controls']});
@@ -40,11 +40,17 @@ myApp.dashboard = (function($) {
 	* this calls jsonUptimeRobotApi() when loaded  
 	*/
 	function getUptime(apikey) {
+		$("#error").hide();
 		var url = "https://api.uptimerobot.com/getMonitors?apiKey=" + apikey + "&customUptimeRatio=1-7-30-365&format=json&logs=1";
 		$.ajax({
 			url: url,
 			context: document.body,
-			dataType: 'jsonp'
+			dataType: 'jsonp',
+			error: function(xhr, status, error){
+				var errorMessage = xhr.status + ': ' + xhr.statusText
+				console.log("ERROR - connecting to uptimerobot API failed (" + url + ") - " + errorMessage);
+				$("#error").html("ERROR - connecting to uptimerobot API failed (" + url + ")").show();
+			}
 		});
 	}
 
