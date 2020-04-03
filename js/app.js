@@ -28,7 +28,6 @@ myApp.dashboard = (function($) {
 	}		
 
 	function toggleIcon(e) {
-		console.log("TEST")
 		$(e.target)
 			.prev('.card-header')
 			.find(".more-less")
@@ -83,9 +82,12 @@ myApp.dashboard = (function($) {
 				break;
 		}
 
+		var y = 0;
 		for (var i in data.logs) {
 			var log = data.logs[i], dateTime = Date.parse(new Date(data.logs[i].datetime * 1000));
 			data.logs[i].datetime = dateTime.toString("dd-MM-yyyy HH:mm:ss");
+			data.logs[i].idx = (function(in_i){return in_i+1;})(y);
+			y++;
 		}
 		data.logs = $.merge([], data.logs); //make sure log is set
 

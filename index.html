@@ -99,21 +99,31 @@
 			<div id="collapse{{id}}" class="collapse" data-parent="#accordion">
 				<div class="card-body">
 					<div class="row">
-						<div class="col-md-auto">
+						<div class="col">
 							<span id="control_{{id}}"></span>
 						</div>
 						<div class="col">
 							<span id="chart_{{id}}"></span>
 						</div>
 						<div class="col">
-						<ul class="list-group list-group-flush">
-							{{#logs}}
-							<li class="list-group-item">
-								<span class="badge badge-{{labeltype}}"><i class="fa fa-{{typeicon}}"></i></span>
-								&nbsp;{{datetime}}
-							</li>
-							{{/logs}}
-						</ul>
+							<table class="table table-sm">
+								<thead>
+									<tr>
+										<th scope="col">#</th>
+										<th scope="col">Status</th>
+										<th scope="col">Date</th>
+									</tr>
+								</thead>
+								<tbody>
+									{{#logs}}
+									<tr>
+										<th scope="row">{{idx}}</th>
+										<td><span class="badge badge-{{labeltype}}"><i class="fa fa-{{typeicon}}"></i></span></td>
+										<td>{{datetime}}</td>
+									</tr>
+									{{/logs}}
+								</body>
+							</table>
 						</div>
 					</div>
 				</div>
